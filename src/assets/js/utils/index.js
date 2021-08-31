@@ -5,41 +5,53 @@ Validation = {
    * 验证表单规则
    * @param data  表单数据
    * @param rules  规则
+   * @param formName  字段名称
+   * @param ismessage  是否为弹出提示
    * @returns {Promise<any>}
    */
-  validateData: function (data, rules, formName) {
+  validateData: function (data, rules, formName, ismessage = false) {
     return new Promise((resolve, reject) => {
-      let obj = [];
-      for (let formKey in data) {
-        let item = data[formKey];//数据
-        let keyName = formName[formKey];//字段名称
-        if (!rules[formKey]) continue;
-        for (let rulesKey in rules[formKey]) {
-          var str = Validation[rulesKey](keyName, item, rules[rulesKey]);
-          if (str){
-            obj[formKey]=str;break;
+      try {
+        let obj = [];
+        for (let formKey in data) {
+          let item = data[formKey];//数据
+          let keyName = formName[formKey];//字段名称
+          let flag = false;
+          if (!rules[formKey]) continue;
+          for (let rulesKey in rules[formKey]) {
+            var str = Validation[rulesKey](keyName, item, rules[rulesKey]);
+            if (str) {
+              obj[formKey] = str;
+              flag = true;
+              break;
+            }
           }
-        }
-        // if(rules[key].require && !item){
-        //   obj.push({key:`${keyName}不能为空`});continue;
-        // }
-        // if(rules[key].Number && parseFloat(item).toString() == "NaN"){
-        //   obj.push({key:`${keyName}必须是一个数字`});continue;
-        // }
-        // if(rules[key].max && rules[key].max<item.length){
-        //   obj.push({key:`${keyName}不能超过${max}个字符`});continue;
-        // }
-        // if(rules[key].min && rules[key].min>item.length){
-        //   obj.push({key:`${keyName}不能少于${min}个字符`});continue;
-        // }
-        // if(rules[key].email && !(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(item))){
-        //   obj.push({key:`${keyName}格式错误`});continue;
-        // }
-        // if(rules[key].tel && !(/^[1][3,4,5,7,8,9][0-9]{9}$/.test(item))){
-        //   obj.push({key:`${keyName}格式错误`});continue;
-        // }
-      };
-      resolve(obj)
+          if (ismessage && flag) {
+            break;
+          }
+          // if(rules[key].require && !item){
+          //   obj.push({key:`${keyName}不能为空`});continue;
+          // }
+          // if(rules[key].Number && parseFloat(item).toString() == "NaN"){
+          //   obj.push({key:`${keyName}必须是一个数字`});continue;
+          // }
+          // if(rules[key].max && rules[key].max<item.length){
+          //   obj.push({key:`${keyName}不能超过${max}个字符`});continue;
+          // }
+          // if(rules[key].min && rules[key].min>item.length){
+          //   obj.push({key:`${keyName}不能少于${min}个字符`});continue;
+          // }
+          // if(rules[key].email && !(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(item))){
+          //   obj.push({key:`${keyName}格式错误`});continue;
+          // }
+          // if(rules[key].tel && !(/^[1][3,4,5,7,8,9][0-9]{9}$/.test(item))){
+          //   obj.push({key:`${keyName}格式错误`});continue;
+          // }
+        };
+        resolve(obj)
+      } catch (err) {
+        throw err;
+      }
     })
   },
   /**
@@ -96,7 +108,7 @@ Validation = {
    * @returns 提示文字
    */
   email: (keyName, item) => {
-    if (!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(item))) {
+    if (item && !(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(item))) {
       return `${keyName}格式错误`;
     }
   },
@@ -107,7 +119,7 @@ Validation = {
    * @returns 提示文字
    */
   tel: (keyName, item) => {
-    if (!(/^[1][3,4,5,7,8,9][0-9]{9}$/.test(item))) {
+    if (item && !(/^[1][3,4,5,7,8,9][0-9]{9}$/.test(item))) {
       return `${keyName}格式错误`;
     }
   },

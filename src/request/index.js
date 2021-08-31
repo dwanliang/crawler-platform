@@ -17,7 +17,7 @@ service.interceptors.request.use(
     return Promise.reject(error)//返回错误
   }
 )
-//相应拦截
+//响应拦截
 service.interceptors.response.use((response) => {
   const res = response.data
   if (res.code==200) { 
