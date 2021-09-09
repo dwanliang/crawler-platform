@@ -15,13 +15,14 @@ export default {
     dropDown,
   },
   mounted(){
-    console.log(typeList);
+    // console.log(typeList);
   },
   data() {
     return {
+      msg: null,
       typeList,
       rulesList,
-      explainList
+      explainList,
     }
   },
 }

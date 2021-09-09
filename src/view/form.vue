@@ -19,10 +19,7 @@
             :model="item"
             v-for="(item, index) in formData"
             :key="item.id"
-            :class="[
-              'demo-form-inline',
-              { 'form-sticky': itemFlag(index) },
-            ]"
+            :class="['demo-form-inline', { 'form-sticky': itemFlag(index) }]"
           >
             <transition name="fade">
               <el-card
@@ -31,26 +28,29 @@
               >
                 <div @click="foucItemIndex(index)">
                   <span class="form-start">{{ index }}.</span>
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :hide-after="700"
-                    content="长按我拖拽"
-                    placement="bottom"
-                  >
-                    <i class="el-icon-rank form-draggable"></i>
-                  </el-tooltip>
-                  <div class="form-del" v-show="itemFlag(index)">
-                    <el-popconfirm title="确定删除吗？" @confirm="del(index)">
+                  <i class="el-icon-rank form-draggable"></i>
+                  <div class="form-chane" v-show="itemFlag(index)">
+                    <div class="form-copy">
                       <el-button
-                        type="danger"
-                        :disabled="formData.length == 1"
-                        icon="el-icon-delete"
-                        slot="reference"
+                        type="info"
+                        icon="el-icon-document-copy"
                         size="mini"
                         circle
+                        @click="copy(item)"
                       ></el-button>
-                    </el-popconfirm>
+                    </div>
+                    <div class="form-del">
+                      <el-popconfirm title="确定删除吗？" @confirm="del(index)">
+                        <el-button
+                          type="danger"
+                          :disabled="formData.length == 1"
+                          icon="el-icon-delete"
+                          slot="reference"
+                          size="mini"
+                          circle
+                        ></el-button>
+                      </el-popconfirm>
+                    </div>
                   </div>
                 </div>
               </el-card>
@@ -58,12 +58,7 @@
           </el-form>
         </transition-group>
       </draggable>
-      <el-form
-        label-position="left"
-        label-width="65px"
-        size="mini"
-        class="form-care3 form-sticky"
-      >
+      <el-form size="mini" class="form-care3 form-sticky">
         <div class="box-card form-list fouc-in" :hidden="cardHiddn">
           <span class="form-start">{{ focusIndex }}.</span>
           <i class="el-icon-close card-del" @click="cardDel"></i>
@@ -86,7 +81,7 @@
           <component
             ref="form_type"
             :is="formType"
-            :itemFormData="itemFormData"
+            :itemFormData.sync="itemFormData"
           ></component>
           <el-switch v-model="itemFormData.requires" inactive-text="必填">
           </el-switch>
@@ -105,6 +100,8 @@
 </template>
 <script>
 import formInputText from "@/components/form-input-text"; //单、多行文本框
+import formInputRadio from "@/components/form-input-radio"; //单选框
+import formInputCheckbox from "@/components/form-input-checkbox"; //单选框
 //js
 import formMixin from "@/assets/js/mixins/formMixin";
 
@@ -114,17 +111,21 @@ export default {
   data() {
     return {
       id: 1,
-      msg: null,
       drag: false,
       focusIndex: 0,
-      cardHiddn: true,
-      typeTemplate: [formInputText, formInputText],
+      cardHiddn: false,
+      typeTemplate: [
+        formInputText,
+        formInputText,
+        formInputRadio,
+        formInputCheckbox,
+      ],
       formData: [
         {
           id: 1,
           replace: "", //替换符
           title: "", //标题
-          type: "", //类型
+          type: "4", //类型
           value: "", //默认值
           tips: "", //提示
           placeholder: "", //占位符
@@ -150,18 +151,31 @@ export default {
       console.log(this.focusIndex);
     };
   },
+  watch: {
+    "itemFormData.type": {
+      handler(val) {
+        this.initItemForm();
+      },
+    },
+  },
   computed: {
     formType() {
       return this.typeTemplate[+this.itemFormData.type - 1];
     },
-    itemFormData() {
-      return this.formData[this.focusIndex];
+    itemFormData: {
+      get: function () {
+        return this.formData[this.focusIndex];
+      },
+      set: function (value) {
+        // this.formData[this.focusIndex] = value;
+        this.$set(this.formData,this.focusIndex,value)
+      },
     },
-    itemFlag(){
-      return function(index) {
-        return index == this.focusIndex
-      }
-    }
+    itemFlag() {
+      return function (index) {
+        return index == this.focusIndex;
+      };
+    },
   },
   methods: {
     add() {
@@ -190,8 +204,12 @@ export default {
       this.formData.splice(index, 1);
       this.focusIndex = this.formData.length - 1;
     },
+    copy(itemData) {
+      this.formData.push({ ...itemData, id: itemData.id + 1 });
+    },
     initItemForm() {
-      this.formData[index] = {
+      this.itemFormData = {
+        ...this.itemFormData,
         replace: "", //替换符
         title: "", //标题
         value: "", //默认值
@@ -216,6 +234,7 @@ export default {
     onStart(e) {
       this.drag = true;
       this.focusIndex = e.oldIndex;
+      console.log(this.formData);
     },
     //拖拽结束事件
     onEnd(e) {
@@ -253,17 +272,39 @@ body {
     justify-content: center;
   }
 }
-/deep/ .el-button--mini.is-circle{
+/deep/ .el-button--mini.is-circle {
   padding: 3px;
 }
-.form-del {
-  display: inline;
+.form-chane {
   position: absolute;
   height: 20px;
+  width: 50px;
   line-height: 20px;
   right: 40px;
   bottom: -10px;
+  .form-del {
+    display: inline;
+  }
+  .form-copy {
+    display: inline;
+  }
 }
+// .form-del {
+//   display: inline;
+//   position: absolute;
+//   height: 20px;
+//   line-height: 20px;
+//   right: 40px;
+//   bottom: -10px;
+// }
+// .form-copy{
+//   display: inline;
+//   position: absolute;
+//   height: 20px;
+//   line-height: 20px;
+//   right: 65px;
+//   bottom: -10px;
+// }
 .box-card {
   border: 1px solid #ebeef5;
   background-color: #fff;
@@ -274,7 +315,7 @@ body {
   box-shadow: 0 2px 12px 0 #0000001a;
 }
 .fouc-in {
-  box-shadow: 0 2px 12px 0 #55e2ef;
+  box-shadow: 0 0 5px 0 #a1d9df;
 }
 .form-draggable {
   position: absolute;
@@ -304,6 +345,11 @@ body {
 .form-care3 {
   width: 35%;
   float: right;
+  // height: 500px;
+  // overflow: auto;
+}
+.form-care3::-webkit-scrollbar {
+  display: none;
 }
 .form-sticky {
   position: sticky;

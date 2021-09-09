@@ -29,3 +29,33 @@ export const rulesList = [
     label: '数字'
   }
 ]
+
+export const radioList = [
+  {
+    id: 1,
+    value: "选项",
+  },
+  {
+    id: 2,
+    value: "选项",
+  },
+  {
+    id: 3,
+    value: "选项",
+  },
+]
+
+export const checkboxList = [
+  {
+    id: 1,
+    value: "选项",
+  },
+  {
+    id: 2,
+    value: "选项",
+  },
+  {
+    id: 3,
+    value: "选项",
+  },
+]

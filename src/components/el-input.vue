@@ -1,6 +1,6 @@
 <template>
   <el-form-item>
-    <span slot="label">
+    <label class="label-Zindex" slot="label" v-if="label">
       {{ label }}
       <el-popover
         placement="bottom"
@@ -10,7 +10,7 @@
       >
         <i class="el-icon-question" slot="reference"></i>
       </el-popover>
-    </span>
+    </label>
 
     <!-- <el-col :span="8"> -->
     <el-input
@@ -79,5 +79,9 @@ export default {
   widows: 100px;
   display: inline-block;
   vertical-align: middle;
+}
+/deep/ .el-form-item__label{
+  z-index: 999;
+  position: relative;
 }
 </style>

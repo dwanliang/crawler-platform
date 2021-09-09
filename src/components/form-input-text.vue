@@ -27,7 +27,6 @@ export default {
   },
   mixins: [formMixin],
   mounted() {
-    console.log(this.rulesList);
   },
   
 };
