@@ -2,7 +2,7 @@
   <div v-if="itemFormData">
     <la-text
       label="提示"
-      :explain="explainList.formtips"
+      :explain="explainList.formTips"
       v-model="itemFormData.tips"
     ></la-text>
     <form-option
@@ -15,7 +15,7 @@
 
 <script>
 import formMixin from "@/assets/js/mixins/formMixin";
-import formOption from "@/components/form-option";
+import formOption from "@/components/formType/form-option";
 import {radioList} from "@/assets/js/dictionaries";
 export default {
   components: {

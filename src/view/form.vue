@@ -15,10 +15,10 @@
       >
         <transition-group>
           <el-form
-            :inline="true"
             :model="item"
             v-for="(item, index) in formData"
             :key="item.id"
+            size="mini"
             :class="['demo-form-inline', { 'form-sticky': itemFlag(index) }]"
           >
             <transition name="fade">
@@ -29,6 +29,12 @@
                 <div @click="foucItemIndex(index)">
                   <span class="form-start">{{ index }}.</span>
                   <i class="el-icon-rank form-draggable"></i>
+                  <component
+                    ref="formContent"
+                    :is="formContent(item.type)"
+                    :itemFormData="item"
+                  ></component>
+                  <!-- 下边功能区（start） -->
                   <div class="form-chane" v-show="itemFlag(index)">
                     <div class="form-copy">
                       <el-button
@@ -52,12 +58,14 @@
                       </el-popconfirm>
                     </div>
                   </div>
+                  <!-- 下边功能区（end） -->
                 </div>
               </el-card>
             </transition>
           </el-form>
         </transition-group>
       </draggable>
+      <!-- 右侧编辑块（start） -->
       <el-form size="mini" class="form-care3 form-sticky">
         <div class="box-card form-list fouc-in" :hidden="cardHiddn">
           <span class="form-start">{{ focusIndex }}.</span>
@@ -79,7 +87,7 @@
             v-model="itemFormData.replace"
           ></la-text>
           <component
-            ref="form_type"
+            ref="formType"
             :is="formType"
             :itemFormData.sync="itemFormData"
           ></component>
@@ -90,6 +98,7 @@
           >预览</el-button
         >
       </el-form>
+      <!-- 右侧编辑块（end） -->
     </div>
     <div class="form-fun">
       <el-button type="primary" @click="add" icon="el-icon-plus"></el-button>
@@ -99,9 +108,16 @@
   <!-- </div> -->
 </template>
 <script>
-import formInputText from "@/components/form-input-text"; //单、多行文本框
-import formInputRadio from "@/components/form-input-radio"; //单选框
-import formInputCheckbox from "@/components/form-input-checkbox"; //单选框
+// 切换表单类型的动态组件
+import formTypeText from "@/components/formType/form-type-text"; //单、多行文本框
+import formTypeRadio from "@/components/formType/form-type-radio"; //单选框
+import formTypeCheckbox from "@/components/formType/form-type-checkbox"; //多选框
+import formTypeTime from "@/components/formType/form-type-time"; //时间框
+import formTypeDate from "@/components/formType/form-type-date"; //日期框
+
+//表单内容动态组件
+import formConText from "@/components/formCon/form-con-text"; //单、多行文本框
+
 //js
 import formMixin from "@/assets/js/mixins/formMixin";
 
@@ -114,19 +130,27 @@ export default {
       drag: false,
       focusIndex: 0,
       cardHiddn: false,
+      flag: true,
+      //切换表单类型的动态组件数据
       typeTemplate: [
-        formInputText,
-        formInputText,
-        formInputRadio,
-        formInputCheckbox,
+        formTypeText,
+        formTypeText,
+        formTypeRadio,
+        formTypeCheckbox,
+        formTypeTime,
+        formTypeDate,
+      ],
+      //表单内容的动态组件数据
+      contentTemplate: [
+        formConText,
       ],
       formData: [
         {
           id: 1,
           replace: "", //替换符
           title: "", //标题
-          type: "4", //类型
-          value: "", //默认值
+          type: "1", //类型
+          value: "2021年09月03日", //默认值
           tips: "", //提示
           placeholder: "", //占位符
           rules: "",
@@ -148,19 +172,31 @@ export default {
         default:
           return;
       }
-      console.log(this.focusIndex);
     };
   },
   watch: {
     "itemFormData.type": {
       handler(val) {
-        this.initItemForm();
+        if (this.flag) {
+          this.initItemForm();
+        }
+        this.flag = true;
       },
+    },
+    focusIndex() {
+      this.flag = false;
     },
   },
   computed: {
     formType() {
       return this.typeTemplate[+this.itemFormData.type - 1];
+    },
+    formContent() {
+      return function(type) {
+        console.log(type);
+        return this.contentTemplate[type - 1];
+      }
+      
     },
     itemFormData: {
       get: function () {
@@ -168,7 +204,7 @@ export default {
       },
       set: function (value) {
         // this.formData[this.focusIndex] = value;
-        this.$set(this.formData,this.focusIndex,value)
+        this.$set(this.formData, this.focusIndex, value);
       },
     },
     itemFlag() {
@@ -190,6 +226,7 @@ export default {
         rules: "",
         requires: true,
       });
+      console.log("formData", this.formData);
     },
     del(index) {
       if (this.formData.length == 1) {

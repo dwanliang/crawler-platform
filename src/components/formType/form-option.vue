@@ -50,8 +50,16 @@
 </template>
 
 <script>
-import formMixin from "@/assets/js/mixins/formMixin";
+//组件
+import draggable from "vuedraggable";
+import laText from "@/components/el-input";
+
+//js
 export default {
+  components:{
+    laText,
+    draggable
+  },
   props: {
     optionData: {
       type: Object,
@@ -62,17 +70,34 @@ export default {
       default: "",
     },
   },
-  mixins: [formMixin],
   data() {
-    itemData: this.optionData
+    return {
+      itemData: this.deepCopy(this.optionData)
+    }
   },
+
+  // computed: {
+  //   itemData: {
+  //     get: function () {
+  //       return this.optionData;
+  //     },
+  //     set: function (value) {
+  //       console.log(value);
+  //       this.$emit("onOptionData", value);
+  //     },
+  //   },
+  // },
   watch: {
     itemData: {
       handler(newVal) {
-        this.$emit("onitemData", newVal);
+        console.log(newVal);
+        this.$emit("onOptionData", newVal);
       },
       deep: true,
     },
+  },
+  mounted() {
+    
   },
   methods: {
     change(val) {
@@ -123,8 +148,8 @@ export default {
     width: 100%;
   }
   .option-select {
-    .select-radio{
-      /deep/ .el-checkbox__inner{
+    .select-radio {
+      /deep/ .el-checkbox__inner {
         border-radius: 50%;
       }
     }
@@ -134,7 +159,7 @@ export default {
     /deep/ .el-radio {
       margin-right: 0;
     }
-    /deep/ .el-checkbox__label{
+    /deep/ .el-checkbox__label {
       padding-left: 0;
     }
     /deep/ .el-form-item {

@@ -7,6 +7,7 @@
         width="200"
         trigger="click"
         :content="explain"
+        v-if="explain"
       >
         <i class="el-icon-question" slot="reference"></i>
       </el-popover>

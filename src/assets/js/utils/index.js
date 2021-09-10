@@ -1,6 +1,4 @@
-let Validation;
-
-Validation = {
+export const Validation = {
   /**
    * 验证表单规则
    * @param data  表单数据
@@ -127,4 +125,26 @@ Validation = {
 
   // }
 }
-export default Validation
+
+/**
+ * 对象深拷贝
+ * @param obj
+ * @returns {*}
+ */
+export const deepCopy = (obj) => {
+  // 根据obj的类型判断是新建一个数组还是对象
+  let newObj = Array.isArray(obj) ? [] : {};
+  // 判断传入的obj存在，且类型为对象
+  if (obj && typeof obj === 'object') {
+    for (let k in obj) {
+      // 如果obj的子元素是对象，则进行递归操作
+      if (obj[k] && typeof obj[k] === 'object') {
+        newObj[k] = deepCopy(obj[k]);
+      } else {
+        // 如果obj的子元素不是对象，则直接赋值
+        newObj[k] = obj[k];
+      }
+    }
+  }
+  return newObj;
+};

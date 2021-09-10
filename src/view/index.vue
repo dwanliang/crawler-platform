@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import utils from "@/assets/js/utils";
+import {Validation} from "@/assets/js/utils";
 export default {
   data() {
     return {
@@ -50,7 +50,7 @@ export default {
     };
   },
   mounted() {
-    utils.validateData(this.formData, this.rules, this.formName).then((res)=>{
+    Validation.validateData(this.formData, this.rules, this.formName).then((res)=>{
       console.log(res);
     });
     this.httpPost(this.$api.User.userList, { uid: 1 }).then((res) => {
