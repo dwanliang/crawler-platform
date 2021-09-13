@@ -15,7 +15,7 @@ export default {
     dropDown,
   },
   mounted(){
-    // console.log(typeList);
+
   },
   data() {
     return {

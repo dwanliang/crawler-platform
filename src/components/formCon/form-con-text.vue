@@ -2,7 +2,9 @@
   <la-text
     :label="itemFormData.title ? itemFormData.title : '未命名'"
     v-model="itemFormData.value"
-    width="50%"
+    :placeholder="itemFormData.placeholder"
+    :isUpdate="false"
+    width="80%"
   ></la-text>
 </template>
 
@@ -19,5 +21,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+/deep/ .el-form-item__label {
+  width: 100%;
+  text-align: left;
+}
 </style>

@@ -49,11 +49,19 @@ export default {
     width: {
       type: [String, Number],
     },
+    isUpdate: {
+      type: [Boolean],
+      default: true,
+    },
   },
   computed: {
     placeholderText() {
-      let str = this.placeholder ? this.placeholder : this.label;
-      return `请输入${str}`;
+      if (this.isUpdate) {
+        let str = this.placeholder ? this.placeholder : this.label;
+        return `请输入${str}`;
+      }else{
+        return this.placeholder;
+      }
     },
     newValue: {
       get: function () {
@@ -81,7 +89,7 @@ export default {
   display: inline-block;
   vertical-align: middle;
 }
-/deep/ .el-form-item__label{
+/deep/ .el-form-item__label {
   z-index: 999;
   position: relative;
 }

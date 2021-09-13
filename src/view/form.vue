@@ -42,7 +42,7 @@
                         icon="el-icon-document-copy"
                         size="mini"
                         circle
-                        @click="copy(item)"
+                        @click="copy(index)"
                       ></el-button>
                     </div>
                     <div class="form-del">
@@ -66,7 +66,7 @@
         </transition-group>
       </draggable>
       <!-- 右侧编辑块（start） -->
-      <el-form size="mini" class="form-care3 form-sticky">
+      <el-form size="mini" class="form-care3 form-sticky" v-if="itemFormData">
         <div class="box-card form-list fouc-in" :hidden="cardHiddn">
           <span class="form-start">{{ focusIndex }}.</span>
           <i class="el-icon-close card-del" @click="cardDel"></i>
@@ -128,7 +128,7 @@ export default {
     return {
       id: 1,
       drag: false,
-      focusIndex: 0,
+      focusIndex: -1,
       cardHiddn: false,
       flag: true,
       //切换表单类型的动态组件数据
@@ -141,9 +141,7 @@ export default {
         formTypeDate,
       ],
       //表单内容的动态组件数据
-      contentTemplate: [
-        formConText,
-      ],
+      contentTemplate: [formConText],
       formData: [
         {
           id: 1,
@@ -153,7 +151,7 @@ export default {
           value: "2021年09月03日", //默认值
           tips: "", //提示
           placeholder: "", //占位符
-          rules: "",
+          rules: "text",
           requires: true,
         },
       ],
@@ -175,16 +173,19 @@ export default {
     };
   },
   watch: {
+    focusIndex() {
+      this.flag = false;
+    },
     "itemFormData.type": {
       handler(val) {
         if (this.flag) {
           this.initItemForm();
+          if (val == 1) {
+            this.itemFormData.rules = "text";
+          }
         }
         this.flag = true;
       },
-    },
-    focusIndex() {
-      this.flag = false;
     },
   },
   computed: {
@@ -192,11 +193,9 @@ export default {
       return this.typeTemplate[+this.itemFormData.type - 1];
     },
     formContent() {
-      return function(type) {
-        console.log(type);
+      return function (type) {
         return this.contentTemplate[type - 1];
-      }
-      
+      };
     },
     itemFormData: {
       get: function () {
@@ -219,11 +218,11 @@ export default {
         id: ++this.id,
         replace: "", //替换符
         title: "", //标题
-        type: "", //类型
+        type: "1", //类型
         value: "", //默认值
         tips: "", //提示
         placeholder: "", //占位符
-        rules: "",
+        rules: "text",
         requires: true,
       });
       console.log("formData", this.formData);
@@ -239,10 +238,10 @@ export default {
         return;
       }
       this.formData.splice(index, 1);
-      this.focusIndex = this.formData.length - 1;
+      this.focusIndex = -1;
     },
-    copy(itemData) {
-      this.formData.push({ ...itemData, id: itemData.id + 1 });
+    copy(index) {
+      this.formData.splice(index + 1,0,{ ...this.formData[index], id: ++this.id });
     },
     initItemForm() {
       this.itemFormData = {

@@ -8,7 +8,7 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'Index',
       component: Index,
       meta:{
@@ -16,7 +16,7 @@ const router = new Router({
       }
     },
     {
-      path: '/form',
+      path: '/',
       name: 'Form',
       component: Form,
       meta:{

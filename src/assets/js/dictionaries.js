@@ -22,11 +22,20 @@ export const typeList = [
 
 export const rulesList = [
   {
-    value: '1',
+    value: 'text',
     label: '文本'
   }, {
-    value: '2',
+    value: 'number',
     label: '数字'
+  }, {
+    value: 'email',
+    label: '邮箱'
+  }, {
+    value: 'tel',
+    label: '手机号'
+  }, {
+    value: 'identityCard',
+    label: '身份证'
   }
 ]
 
