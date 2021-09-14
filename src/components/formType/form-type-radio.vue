@@ -16,7 +16,7 @@
 <script>
 import formMixin from "@/assets/js/mixins/formMixin";
 import formOption from "@/components/formType/form-option";
-import {radioList} from "@/assets/js/dictionaries";
+import { radioList } from "@/assets/js/dictionaries";
 export default {
   components: {
     formOption,
@@ -26,6 +26,7 @@ export default {
       radioData: {
         optionValue: [],
         optionList: radioList,
+        direction: 1, //排列方向
       },
     };
   },
@@ -36,13 +37,21 @@ export default {
     },
   },
   mixins: [formMixin],
-  mounted() {
-    console.log(radioList);
+  created() {
+    console.log(this.itemFormData.direction);
+    if (this.itemFormData.direction) {
+      this.radioData = {
+        optionValue: this.itemFormData.optionValue,
+        optionList: this.itemFormData.optionList,
+        direction: this.itemFormData.direction,
+      };
+    }
+    console.log(this.radioData);
   },
   methods: {
     //单选数据回调
     onOptionData(newVal) {
-      this.$emit('update:itemFormData', {...this.itemFormData, ...newVal});
+      this.$emit("update:itemFormData", { ...this.itemFormData, ...newVal });
     },
   },
 };

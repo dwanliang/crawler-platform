@@ -1,21 +1,36 @@
 <template>
-  <el-form-item :label="label">
-    <el-select 
-      :style="`width:${width}`"
-      v-model="newVal" 
-      :disabled="disabled" 
-      :placeholder="label"
-      :clearable="yesDel"
-    >
-      <el-option 
-        v-for="(item,index) in dropdownList" 
-        :key="index" 
-        :label="item.label"
-        :value="item.value"
-        :disabled="item.disabled"
-      ></el-option>
-    </el-select>
-  </el-form-item>
+  <!-- <el-form-item :label="label"> -->
+    <div>
+      <label class="input-label" v-if="label">
+        <em v-if="required">*</em>
+        {{ label }}
+        <el-popover
+          placement="bottom"
+          width="200"
+          trigger="click"
+          :content="explain"
+          v-if="explain"
+        >
+          <i class="el-icon-question" slot="reference"></i>
+        </el-popover>
+      </label>
+      <el-select
+        :style="`width:${width}`"
+        v-model="newVal"
+        :disabled="disabled"
+        :placeholder="label"
+        :clearable="yesDel"
+      >
+        <el-option
+          v-for="(item, index) in dropdownList"
+          :key="index"
+          :label="item.label"
+          :value="item.value"
+          :disabled="item.disabled"
+        ></el-option>
+      </el-select>
+    </div>
+  <!-- </el-form-item> -->
 </template>
 
 <script>
@@ -34,21 +49,29 @@ export default {
       default: false,
     },
     width: {
-      type: [ String, Number],
+      type: [String, Number],
     },
     value: {
       type: [String, Number],
-      default: ''
+      default: "",
     },
     dropdownList: {
       type: Array,
-      default: []
-    }
+      default: [],
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    explain: {
+      type: String,
+      default: '',
+    },
   },
   watch: {
-    newVal(newVal){
+    newVal(newVal) {
       this.$emit("input", newVal);
-    }
+    },
   },
   computed: {
     newVal: {
@@ -59,9 +82,10 @@ export default {
         this.$emit("input", value);
       },
     },
-  }
+  },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import '~@/assets/css/form';
 </style>

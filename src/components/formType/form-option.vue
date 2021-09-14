@@ -1,51 +1,71 @@
 <template>
-  <div class="option-card">
-    <div class="option-card-label">
-      <label>选项</label>
-      <div class="option-laber-fun">
-        <span>模板</span>|<span>添加到模板</span>
+  <div>
+    <div class="option-card">
+      <div class="input-label">
+        <label>选项</label>
+        <div class="option-laber-fun">
+          <span>模板</span>|<span>添加到模板</span>
+        </div>
       </div>
-    </div>
-    <el-checkbox-group class="option-radio" v-model="itemData.optionValue">
-      <draggable
-        v-model="itemData.optionList"
-        chosenClass="chosen"
-        forceFallback="true"
-        group="people"
-        animation="300"
-        handle=".option-draggable"
-        class="form-care7"
-      >
-        <transition-group>
-          <div
-            class="option-select"
-            v-for="(item, index) in itemData.optionList"
-            :key="item.id"
-          >
-            <i class="el-icon-s-unfold option-draggable"></i>
-            <el-checkbox
-              @click.native.stop.prevent="change(item.id)"
-              :label="item.id"
-              :class="type == 'radio' ? 'select-radio' : ''"
+      <el-checkbox-group class="option-radio" v-model="itemData.optionValue">
+        <draggable
+          v-model="itemData.optionList"
+          chosenClass="chosen"
+          forceFallback="true"
+          group="people"
+          animation="300"
+          handle=".option-draggable"
+          class="form-care7"
+        >
+          <transition-group>
+            <div
+              class="option-select"
+              v-for="(item, index) in itemData.optionList"
+              :key="item.id"
             >
-              <span></span>
-            </el-checkbox>
-            <la-text v-model="item.value" width="100%"></la-text>
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              circle
-              :disabled="itemData.optionList.length == 1"
-              @click="optionDel(index)"
-            ></el-button>
-          </div>
-        </transition-group>
-      </draggable>
-    </el-checkbox-group>
-    <el-button size="mini" @click="optionAdd(itemData.optionList)"
-      >新增</el-button
-    >
+              <i class="el-icon-s-unfold option-draggable"></i>
+              <el-checkbox
+                @click.native.stop.prevent="change(item.id)"
+                :label="item.id"
+                :class="type == 'radio' ? 'select-radio' : ''"
+              >
+                <span></span>
+              </el-checkbox>
+              <la-text v-model="item.value" width="100%"></la-text>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                circle
+                :disabled="itemData.optionList.length == 1"
+                @click="optionDel(index)"
+              ></el-button>
+            </div>
+          </transition-group>
+        </draggable>
+      </el-checkbox-group>
+      <el-button size="mini" @click="optionAdd(itemData.optionList)"
+        >新增</el-button
+      >
+    </div>
+    <div class="option-direction">
+      <label class="input-label">
+        <em>*</em>
+        排列方向
+        <el-popover
+          placement="bottom"
+          width="200"
+          trigger="click"
+          :content="explainList.formDirection"
+        >
+          <i class="el-icon-question" slot="reference"></i>
+        </el-popover>
+      </label>
+      <el-radio-group v-model="itemData.direction" size="small">
+        <el-radio-button label="1">纵向</el-radio-button>
+        <el-radio-button label="2">横向</el-radio-button>
+      </el-radio-group>
+    </div>
   </div>
 </template>
 
@@ -55,10 +75,11 @@ import draggable from "vuedraggable";
 import laText from "@/components/el-input";
 
 //js
+import explainList from '@/assets/js/explain'
 export default {
-  components:{
+  components: {
     laText,
-    draggable
+    draggable,
   },
   props: {
     optionData: {
@@ -72,8 +93,9 @@ export default {
   },
   data() {
     return {
-      itemData: this.deepCopy(this.optionData)
-    }
+      itemData: this.deepCopy(this.optionData),
+      explainList,
+    };
   },
 
   // computed: {
@@ -94,10 +116,11 @@ export default {
         this.$emit("onOptionData", newVal);
       },
       deep: true,
+      immediate: true,
     },
   },
   mounted() {
-    
+    console.log('this.radioData',this.optionData);
   },
   methods: {
     change(val) {
@@ -140,9 +163,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~@/assets/css/form";
 .option-card {
   border: dotted 1px #d5d5d5;
-  margin: 5px;
+  margin: 10px 0;
   padding: 5px;
   .option-radio {
     width: 100%;
@@ -153,6 +177,9 @@ export default {
         border-radius: 50%;
       }
     }
+    button {
+      margin-left: 5px;
+    }
     margin-bottom: 3px;
     display: flex;
     align-items: center;
@@ -160,7 +187,7 @@ export default {
       margin-right: 0;
     }
     /deep/ .el-checkbox__label {
-      padding-left: 0;
+      padding-left: 5px;
     }
     /deep/ .el-form-item {
       width: 100%;
@@ -170,11 +197,7 @@ export default {
       padding-right: 5px;
     }
   }
-  .option-card-label {
-    width: 100%;
-    display: inline-block;
-    font-size: 14px;
-    color: #606266;
+  .input-label {
     .option-laber-fun {
       float: right;
       padding-right: 5px;
@@ -212,5 +235,8 @@ export default {
       padding-left: 0;
     }
   }
+}
+.option-direction {
+  margin: 10px 0;
 }
 </style>

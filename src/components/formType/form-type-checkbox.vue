@@ -26,7 +26,8 @@ export default {
       type: "checkbox",
       checkboxData: {
         optionValue: [],
-        optionList: checkboxList
+        optionList: checkboxList,
+        direction: 1, //排列方向
       },
     };
   },

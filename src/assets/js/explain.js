@@ -5,5 +5,6 @@ const explainList = {
   formPlaceholder:'输入框内的提示文字',
   formTips:'提示内容',
   formTime:'默认显示的时间',
+  formDirection:'你可以设置该字段的选项是横向排序还是纵向排序',
 }
 export default explainList;

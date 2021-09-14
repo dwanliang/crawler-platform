@@ -1,6 +1,8 @@
 <template>
-  <el-form-item>
-    <label class="label-Zindex" slot="label" v-if="label">
+  <!-- <el-form-item> -->
+  <div>
+    <label class="input-label" slot="label" v-if="label">
+      <em v-if="required">*</em>
       {{ label }}
       <el-popover
         placement="bottom"
@@ -12,15 +14,18 @@
         <i class="el-icon-question" slot="reference"></i>
       </el-popover>
     </label>
-
     <!-- <el-col :span="8"> -->
     <el-input
       :style="`width: ${width}`"
       v-model="newValue"
+      :readonly="!isUpdate"
       :placeholder="placeholderText"
+      :autosize="{ minRows: 2}"
+      :type="type"
     ></el-input>
-    <!-- </el-col> -->
-  </el-form-item>
+  </div>
+  <!-- </el-col> -->
+  <!-- </el-form-item> -->
 </template>
 
 <script>
@@ -53,13 +58,24 @@ export default {
       type: [Boolean],
       default: true,
     },
+    required: {
+      type: [Boolean],
+      default: false,
+    },
+    type: {
+      type: String,
+      default: '',
+    },
+  },
+  mounted() {
+    console.log(this.required);
   },
   computed: {
     placeholderText() {
       if (this.isUpdate) {
         let str = this.placeholder ? this.placeholder : this.label;
         return `请输入${str}`;
-      }else{
+      } else {
         return this.placeholder;
       }
     },
@@ -81,11 +97,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~@/assets/css/form";
 /deep/ .el-form-item__label {
   padding: 0 5px 0 0;
 }
 /deep/ .explain-cont {
-  widows: 100px;
+  width: 100px;
   display: inline-block;
   vertical-align: middle;
 }
