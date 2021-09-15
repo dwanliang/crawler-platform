@@ -38,7 +38,6 @@ export default {
   },
   mixins: [formMixin],
   created() {
-    console.log(this.itemFormData.direction);
     if (this.itemFormData.direction) {
       this.radioData = {
         optionValue: this.itemFormData.optionValue,
@@ -46,7 +45,6 @@ export default {
         direction: this.itemFormData.direction,
       };
     }
-    console.log(this.radioData);
   },
   methods: {
     //单选数据回调
