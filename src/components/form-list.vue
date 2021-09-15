@@ -1,5 +1,5 @@
 <template>
-  <div class="read-only">
+  <div class="read-only" @click="itemFoucIndex(itemIndex)">
     <div :class="['form-list', { 'fouc-in': itemFlag }]">
       <!-- <span class="form-start">{{ index }}.</span> -->
       <!-- <i class="el-icon-rank form-draggable"></i> -->
@@ -84,12 +84,14 @@ export default {
   },
   methods: {
     del() {
-      console.log(itemIndex);
-      this.$emit("del", itemIndex);
+      this.$emit("del", this.itemIndex);
     },
-    add() {
-      this.$emit("add");
+    copy() {
+      this.$emit("copy",this.itemIndex);
     },
+    itemFoucIndex() {
+      this.$emit("itemFoucIndex",this.itemIndex);
+    }
   },
 };
 </script>

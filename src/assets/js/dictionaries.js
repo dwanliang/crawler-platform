@@ -18,6 +18,10 @@ export const typeList = [
     value: '6',
     label: '日期'
   }
+  , {
+    value: '7',
+    label: '组合'
+  }
 ]
 
 export const rulesList = [

@@ -50,7 +50,8 @@
                 :itemIndex="index"
                 :formDataLength="formData.formList.length"
                 @del="del"
-                @add="add"
+                @copy="copy"
+                @itemFoucIndex="itemFoucIndex"
               ></form-list>
             </transition>
           </el-form>
@@ -251,14 +252,16 @@ export default {
         return;
       }
       this.formData.formList.splice(index, 1);
-      this.focusIndex = -1;
+      this.focusIndex = 0;
     },
     copy(index) {
-      console.log(index);
       this.formData.formList.splice(index + 1, 0, {
         ...this.formData.formList[index],
         id: ++this.id,
       });
+    },
+    itemFoucIndex(index) {
+      this.focusIndex = index;
     },
     initItemForm() {
       this.itemFormData = {
@@ -273,13 +276,14 @@ export default {
       };
     },
     saveForm() {
-      console.log("submit!");
+      console.log(this.formData);
     },
     preview() {},
     //开始拖拽事件
     onStart(e) {
       this.drag = true;
       this.focusIndex = e.oldIndex;
+      console.log(this.focusIndex);
     },
     //拖拽结束事件
     onEnd(e) {

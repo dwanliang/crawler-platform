@@ -38,8 +38,14 @@ export default {
     },
   },
   mixins: [formMixin],
-  mounted() {
-    console.log(this.checkboxData);
+  created() {
+    if (this.itemFormData.direction) {
+      this.radioData = {
+        optionValue: this.itemFormData.optionValue,
+        optionList: this.itemFormData.optionList,
+        direction: this.itemFormData.direction,
+      };
+    }
   },
   watch: {
     checkboxData: {
