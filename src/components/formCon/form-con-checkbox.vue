@@ -4,18 +4,19 @@
       <em v-if="itemFormData.required">*</em>
       {{ itemFormData.title ? itemFormData.title : "未命名" }}
     </label>
-    <el-radio-group
+    <el-checkbox-group
       :class="itemFormData.direction == 1 ? 'portrait-option' : ''"
-      v-model="itemFormData.optionValue[0]"
+      v-model="itemFormData.optionValue"
       v-if="itemFormData.optionValue"
     >
-      <el-radio
+      <el-checkbox
         v-for="item in itemFormData.optionList"
         :label="item.id"
         :key="item.id"
-        >{{ item.value }}</el-radio
+        >{{ item.value }}</el-checkbox
       >
-    </el-radio-group>
+
+    </el-checkbox-group>
     <span class="tips">{{ itemFormData.tips }}</span>
   </span>
 </template>

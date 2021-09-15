@@ -1,14 +1,17 @@
 <template>
   <span>
-    <la-text
-      :label="itemFormData.title ? itemFormData.title : '未命名'"
+    <label class="input-label">
+      <em v-if="itemFormData.required">*</em>
+      {{ itemFormData.title ? itemFormData.title : "未命名" }}
+    </label>
+    <el-date-picker
       v-model="itemFormData.value"
-      :placeholder="itemFormData.placeholder"
-      :isUpdate="false"
-      :required="itemFormData.required"
-      :type="+itemFormData.type === 2 ? 'textarea' : ''"
-      :width="+itemFormData.type === 2 ? '100%' : '80%'"
-    ></la-text>
+      type="date"
+      placeholder="默认日期"
+      format="yyyy 年 MM 月 dd 日"
+      value-format="yyyy年MM月dd日"
+    >
+    </el-date-picker>
     <span class="tips">{{ itemFormData.tips }}</span>
   </span>
 </template>
@@ -28,4 +31,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/assets/css/form";
+/deep/ .el-date-editor.el-input {
+  width: 50%;
+}
 </style>

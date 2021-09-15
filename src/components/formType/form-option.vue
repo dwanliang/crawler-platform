@@ -166,7 +166,7 @@ export default {
 @import "~@/assets/css/form";
 .option-card {
   border: dotted 1px #d5d5d5;
-  margin: 10px 0;
+  margin: 5px 0;
   padding: 5px;
   .option-radio {
     width: 100%;
@@ -237,6 +237,6 @@ export default {
   }
 }
 .option-direction {
-  margin: 10px 0;
+  // margin-top: 5px;
 }
 </style>

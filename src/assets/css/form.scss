@@ -12,3 +12,24 @@
     color: red;
   }
 }
+/deep/ .el-form-item__label {
+  width: 100%;
+  text-align: left;
+}
+.tips {
+  line-height: 28px;
+  width: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #aaadb4;
+  padding: 0 12px 0 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.portrait-option {
+  /deep/ .el-checkbox, .el-radio{
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
