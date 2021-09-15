@@ -33,6 +33,7 @@
         @start="onStart"
         @end="onEnd"
         class="form-care5"
+        id="formList"
       >
         <transition-group>
           <el-form
@@ -43,49 +44,21 @@
             :class="['demo-form-inline', { 'form-sticky': itemFlag(index) }]"
           >
             <transition name="fade">
-              <div class="read-only" @click="foucItemIndex(index)">
-                <div :class="['form-list', { 'fouc-in': itemFlag(index) }]">
-                  <!-- <span class="form-start">{{ index }}.</span> -->
-                  <!-- <i class="el-icon-rank form-draggable"></i> -->
-                  <component
-                    ref="formContent"
-                    :is="formContent(item.type)"
-                    :itemFormData="item"
-                  ></component>
-                  <!-- 下边功能区（start） -->
-                  <div class="form-chane" v-show="itemFlag(index)">
-                    <div class="form-copy">
-                      <el-button
-                        type="info"
-                        icon="el-icon-document-copy"
-                        size="mini"
-                        circle
-                        @click="copy(index)"
-                      ></el-button>
-                    </div>
-                    <div class="form-del">
-                      <el-popconfirm title="确定删除吗？" @confirm="del(index)">
-                        <el-button
-                          type="danger"
-                          :disabled="formData.formList.length == 1"
-                          icon="el-icon-delete"
-                          slot="reference"
-                          size="mini"
-                          circle
-                        ></el-button>
-                      </el-popconfirm>
-                    </div>
-                  </div>
-                  <!-- 下边功能区（end） -->
-                </div>
-              </div>
+              <form-list
+                :itemFlag="itemFlag(index)"
+                :itemData="item"
+                :itemIndex="index"
+                :formDataLength="formData.formList.length"
+                @del="del"
+                @add="add"
+              ></form-list>
             </transition>
           </el-form>
         </transition-group>
       </draggable>
       <!-- 右侧编辑块（start） -->
       <el-form size="mini" class="form-care3 form-sticky" v-if="itemFormData">
-        <div class="box-card form-list fouc-in">
+        <div class="form-list fouc-in">
           <!-- <span class="form-start">{{ focusIndex }}.</span> -->
           <dropDown
             label="类型"
@@ -112,7 +85,7 @@
             :itemFormData.sync="itemFormData"
           ></component>
           <el-switch
-            style="margin-top: 5px"
+            style="margin: 5px 0"
             v-model="itemFormData.required"
             inactive-text="必填"
           >
@@ -139,11 +112,14 @@ import formConCheckbox from "@/components/formCon/form-con-checkbox"; ////多选
 import formConTime from "@/components/formCon/form-con-time"; ////时间框
 import formConDate from "@/components/formCon/form-con-date"; ////日期框
 
+//组件
+import formList from "@/components/form-list";
 //js
 import formMixin from "@/assets/js/mixins/formMixin";
+import FormList from "../components/form-list.vue";
 
 export default {
-  components: {},
+  components: { FormList },
   mixins: [formMixin],
   data() {
     return {
@@ -225,11 +201,11 @@ export default {
     formType() {
       return this.typeTemplate[+this.itemFormData.type - 1];
     },
-    formContent() {
-      return function (type) {
-        return this.contentTemplate[type - 1];
-      };
-    },
+    // formContent() {
+    //   return function (type) {
+    //     return this.contentTemplate[type - 1];
+    //   };
+    // },
     itemFormData: {
       get: function () {
         return this.formData.formList[this.focusIndex];
@@ -258,13 +234,11 @@ export default {
         rules: "text",
         required: true,
       });
-      // this.$nextTick(() => {
-      //   document.getElementById("add").scrollIntoView({
-      //     behavior: "smooth", // 平滑过渡
-      //   });
-      //   // this.$refs.add.scrollTop = this.$refs.content.scrollHeight;
-      // });
-      // console.log("formData", this.formData.formList);
+      //添加数据自动滚动到最底部
+      this.$nextTick(() => {
+        var container = this.$el.querySelector("#formList");
+        container.scrollTop = container.scrollHeight;
+      });
     },
     del(index) {
       if (this.formData.formList.length == 1) {
@@ -280,6 +254,7 @@ export default {
       this.focusIndex = -1;
     },
     copy(index) {
+      console.log(index);
       this.formData.formList.splice(index + 1, 0, {
         ...this.formData.formList[index],
         id: ++this.id,
@@ -296,9 +271,6 @@ export default {
         rules: "",
         required: true,
       };
-    },
-    foucItemIndex(index) {
-      this.focusIndex = index;
     },
     saveForm() {
       console.log("submit!");
@@ -320,23 +292,23 @@ export default {
 <style lang="scss" scoped>
 body {
   padding: 0;
-  margin: 0;
+  margin: 0 !important;
 }
 .conter {
   // width: 100%;
   // margin: 0 30px;
-  background-color: #f5f5f9;
-  height: calc(100vh - 100px);
+  // background-color: #f5f5f9;
+  height: calc(100vh - 40px);
+  background-color: #f1f1f1 !important;
   .form-content {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: space-between;
     position: relative;
-    background-color: #d5d5d5d5;
     .form-care2 {
       width: 25%;
-      height: 100%;
+      // height: 100%;
       padding: 10px;
       box-shadow: 0 0 5px 0 #a1d9df;
       background-color: #ffffff;
@@ -353,74 +325,50 @@ body {
       overflow-y: auto;
       width: 45%;
       background-color: #ffffff;
-      .form-list {
-        position: relative;
-        cursor: pointer;
-        padding: 10px;
-        background-color: #ffffff;
-        &::after {
-          content: "";
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 998;
-        }
-        .form-draggable {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          font-size: 20px;
-          cursor: move;
-          z-index: 999;
-        }
-        .form-chane {
-          position: absolute;
-          height: 20px;
-          width: 50px;
-          line-height: 20px;
-          right: 40px;
-          bottom: -10px;
-          z-index: 999;
-          .form-del {
-            display: inline;
-          }
-          .form-copy {
-            display: inline;
-          }
-        }
-        .form-start {
-          position: absolute;
-          top: 5px;
-          left: 5px;
-          color: #866b6bd5;
-          font-weight: 600;
-        }
-      }
-      .fouc-in {
-        cursor: grab;
-        border: 1px dotted #b3b3b3;
-        background-color: hsla(0, 0%, 95.7%, 0.7);
-      }
     }
     .form-care3 {
-      height: 100%;
-      // overflow-y: auto;
+      padding: 10px;
+      // height: 100%;
+      overflow-y: auto;
       width: 25%;
-      overflow: auto;
-      &::-webkit-scrollbar {
-        display: none;
+      // overflow: auto;
+      background-color: #fff;
+      .form-list {
+        // height: calc(100% - 40px);
       }
+      // &::-webkit-scrollbar {
+      //   display: none;
+      // }
 
       // .preview-button {
       //   width: 100%;
       // }
     }
     .form-sticky {
-      // position: sticky;
-      // top: 10px;
-      // z-index: 999;
+      position: sticky;
+      top: 0px;
+      z-index: 999;
+    }
+    .form-care2,
+    .form-care3,
+    .form-care5 {
+      &::-webkit-scrollbar {
+        /*滚动条整体样式*/
+        width: 7px; /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+      }
+      &::-webkit-scrollbar-thumb {
+        /*滚动条里面小方块*/
+        border-radius: 10px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        background: #707070;
+      }
+      &::-webkit-scrollbar-track {
+        /*滚动条里面轨道*/
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        background: #ededed;
+      }
     }
   }
   .form-fun {
