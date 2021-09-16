@@ -147,6 +147,14 @@ export default {
       let optionList = this.itemData.optionList;
       if (optionList.length == 1) return;
       optionList.splice(index, 1);
+      //如果已选列表存在删除的选项则将其从已选列表删除
+      let id = optionList[index].id;
+      let Value = this.itemData.optionValue;
+      index = Value.indexOf(id)
+      if(Value.indexOf(id)){
+        Value.splice(index, 1);
+      }
+      
     },
     optionAdd(itemList) {
       itemList.push({

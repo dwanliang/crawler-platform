@@ -7,15 +7,26 @@ export const Validation = {
    * @param ismessage  是否为弹出提示
    * @returns {Promise<any>}
    */
-  validateData: function (data, rules, formName, ismessage = false) {
-    return new Promise((resolve, reject) => {
+  validateData: function (data, rules, formName = '', ismessage = false) {
+    // return new Promise((resolve, reject) => {
       try {
-        let obj = [];
+        let obj = {};
         for (let formKey in data) {
           let item = data[formKey];//数据
-          let keyName = formName[formKey];//字段名称
+          let keyName = formName ? formName[formKey] : '字段';//字段名称
           let flag = false;
           if (!rules[formKey]) continue;
+          //为数组则遍历递归，此项为动态添加表单，为多个表单验证
+          if (Array.isArray(item)) {
+            let temArr = []
+            item.forEach((element, index) => {
+              // let temFormName = formName ? formName[formKey][index] : '';
+              let temObj = Validation.validateData(element, rules[formKey][index], formName[formKey][index]);
+              temArr.push(temObj)
+            });
+            obj[formKey] = temArr;
+            continue;
+          }
           for (let rulesKey in rules[formKey]) {
             var str = Validation[rulesKey](keyName, item, rules[rulesKey]);
             if (str) {
@@ -27,30 +38,13 @@ export const Validation = {
           if (ismessage && flag) {
             break;
           }
-          // if(rules[key].require && !item){
-          //   obj.push({key:`${keyName}不能为空`});continue;
-          // }
-          // if(rules[key].Number && parseFloat(item).toString() == "NaN"){
-          //   obj.push({key:`${keyName}必须是一个数字`});continue;
-          // }
-          // if(rules[key].max && rules[key].max<item.length){
-          //   obj.push({key:`${keyName}不能超过${max}个字符`});continue;
-          // }
-          // if(rules[key].min && rules[key].min>item.length){
-          //   obj.push({key:`${keyName}不能少于${min}个字符`});continue;
-          // }
-          // if(rules[key].email && !(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(item))){
-          //   obj.push({key:`${keyName}格式错误`});continue;
-          // }
-          // if(rules[key].tel && !(/^[1][3,4,5,7,8,9][0-9]{9}$/.test(item))){
-          //   obj.push({key:`${keyName}格式错误`});continue;
-          // }
         };
-        resolve(obj)
+        // resolve(obj)
+        return obj
       } catch (err) {
         throw err;
       }
-    })
+    // })
   },
   /**
    * 判空

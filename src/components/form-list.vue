@@ -1,39 +1,44 @@
 <template>
-  <div class="read-only" @click="itemFoucIndex(itemIndex)">
-    <div :class="['form-list', { 'fouc-in': itemFlag }]">
-      <!-- <span class="form-start">{{ index }}.</span> -->
-      <!-- <i class="el-icon-rank form-draggable"></i> -->
-      <component
-        ref="formContent"
-        :is="formContent(itemData.type)"
-        :itemFormData="itemData"
-      ></component>
-      <!-- 下边功能区（start） -->
-      <div class="form-chane" v-show="itemFlag">
-        <div class="form-copy">
+  <div
+    :class="[
+      'form-list',
+      { 'fouc-in': itemFlag },
+      { 'form-validate': validateFlag},
+    ]"
+    @click="itemFoucIndex"
+  >
+    <!-- <span class="form-start">{{ index }}.</span> -->
+    <!-- <i class="el-icon-rank form-draggable"></i> -->
+    <component
+      ref="formContent"
+      :is="formContent(itemData.type)"
+      :itemFormData="itemData"
+    ></component>
+    <!-- 下边功能区（start） -->
+    <div class="form-chane" v-show="itemFlag">
+      <div class="form-copy">
+        <el-button
+          type="info"
+          icon="el-icon-document-copy"
+          size="mini"
+          circle
+          @click.prevent="copy(itemIndex)"
+        ></el-button>
+      </div>
+      <div class="form-del">
+        <el-popconfirm title="确定删除吗？" @confirm="del(itemIndex)">
           <el-button
-            type="info"
-            icon="el-icon-document-copy"
+            type="danger"
+            :disabled="formDataLength == 1"
+            icon="el-icon-delete"
+            slot="reference"
             size="mini"
             circle
-            @click.prevent="copy(itemIndex)"
           ></el-button>
-        </div>
-        <div class="form-del">
-          <el-popconfirm title="确定删除吗？" @confirm="del(itemIndex)">
-            <el-button
-              type="danger"
-              :disabled="formDataLength == 1"
-              icon="el-icon-delete"
-              slot="reference"
-              size="mini"
-              circle
-            ></el-button>
-          </el-popconfirm>
-        </div>
+        </el-popconfirm>
       </div>
-      <!-- 下边功能区（end） -->
     </div>
+    <!-- 下边功能区（end） -->
   </div>
 </template>
 
@@ -61,6 +66,12 @@ export default {
     itemIndex: {
       type: Number,
     },
+    validate: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -81,17 +92,26 @@ export default {
         return this.contentTemplate[type - 1];
       };
     },
+    validateFlag() {
+      let validate = this.validate;
+      for(let i in validate){
+        if(validate[i]){
+          return true;
+        }
+      }
+      return false
+    }
   },
   methods: {
     del() {
       this.$emit("del", this.itemIndex);
     },
     copy() {
-      this.$emit("copy",this.itemIndex);
+      this.$emit("copy", this.itemIndex);
     },
     itemFoucIndex() {
-      this.$emit("itemFoucIndex",this.itemIndex);
-    }
+      this.$emit("itemFoucIndex", this.itemIndex);
+    },
   },
 };
 </script>
@@ -143,8 +163,11 @@ export default {
   }
 }
 .fouc-in {
-  cursor: grab;
   border: 1px dotted #b3b3b3;
+  cursor: grab;
   background-color: #f7f7f7;
+}
+.form-validate {
+  border: 1px dotted #ee3f3f;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <!-- <el-form-item> -->
-  <div>
+  <div class="chan-input">
     <label class="input-label" slot="label" v-if="label">
       <em v-if="required">*</em>
       {{ label }}
@@ -16,19 +16,22 @@
     </label>
     <!-- <el-col :span="8"> -->
     <el-input
-      :style="`width: ${width}`"
       v-model="newValue"
       :readonly="!isUpdate"
       :placeholder="placeholderText"
-      :autosize="{ minRows: 2}"
+      :autosize="{ minRows: 2 }"
       :type="type"
+      :style="`width: ${width}`"
+      @blur="blur"
     ></el-input>
+    <span class="chan-tips">{{ validate }}</span>
   </div>
   <!-- </el-col> -->
   <!-- </el-form-item> -->
 </template>
 
 <script>
+import { Validation } from "@/assets/js/utils";
 export default {
   props: {
     label: {
@@ -64,11 +67,39 @@ export default {
     },
     type: {
       type: String,
-      default: '',
+      default: "",
+    },
+    validate: {
+      type: String,
+      default: "",
+    },
+    rules: {
+      type: Object,
+      default() {
+        return {};
+      },
     },
   },
   mounted() {
-    console.log(this.required);
+    
+  },
+  methods: {
+    blur() {
+      if (JSON.stringify(this.rules) != "{}") {
+        for (let rulesKey in this.rules) {
+          var str = Validation[rulesKey](
+            this.label,
+            this.newValue,
+            this.rules[rulesKey]
+          );
+          let validate = "";
+          if (str) {
+            validate = str;
+          }
+          this.$emit("update:validate", validate);
+        }
+      }
+    },
   },
   computed: {
     placeholderText() {
@@ -98,16 +129,29 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/assets/css/form";
-/deep/ .el-form-item__label {
-  padding: 0 5px 0 0;
-}
-/deep/ .explain-cont {
-  width: 100px;
-  display: inline-block;
-  vertical-align: middle;
-}
-/deep/ .el-form-item__label {
-  z-index: 999;
-  position: relative;
+.chan-input {
+  /deep/ .el-form-item__label {
+    padding: 0 5px 0 0;
+  }
+  /deep/ .explain-cont {
+    width: 100px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  /deep/ .el-form-item__label {
+    z-index: 999;
+    position: relative;
+  }
+  .inputRequired {
+    /deep/ .el-input__inner {
+      &::-webkit-input-placeholder {
+        color: #ee3f3f;
+      }
+    }
+  }
+  .chan-tips {
+    font-size: 14px;
+    color: #ee3f3f;
+  }
 }
 </style>

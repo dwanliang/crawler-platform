@@ -4,12 +4,19 @@
     <div class="form-content">
       <div class="form-care2">
         <div class="form-list fouc-in">
-          <la-text label="标题" v-model="formData.title"></la-text>
-          <la-text
-            label="简要说明"
-            v-model="formData.explain"
-            type="textarea"
-          ></la-text>
+          <el-form>
+            <la-text
+              ref="title"
+              label="标题"
+              v-model="formData.title"
+            ></la-text>
+            <la-text
+              label="简要说明"
+              ref="explain"
+              v-model="formData.explain"
+              type="textarea"
+            ></la-text>
+          </el-form>
         </div>
         <div class="form-fun">
           <el-button
@@ -49,6 +56,8 @@
                 :itemData="item"
                 :itemIndex="index"
                 :formDataLength="formData.formList.length"
+                :validate="itemFormValidate(index)"
+                :ref="`formList${focusIndex}`"
                 @del="del"
                 @copy="copy"
                 @itemFoucIndex="itemFoucIndex"
@@ -72,12 +81,13 @@
             label="标题"
             :explain="explainList.formTitle"
             v-model="itemFormData.title"
-            required
           ></la-text>
           <la-text
             label="替换符"
             :explain="explainList.formReplace"
             v-model="itemFormData.replace"
+            :validate.sync="itemFormValidate(focusIndex)['replace']"
+            :rules="itemRules('replace')"
             required
           ></la-text>
           <component
@@ -125,8 +135,8 @@ export default {
   data() {
     return {
       id: 1,
-      drag: false,
-      focusIndex: 0,
+      drag: false, //拖拽状态
+      focusIndex: 0, //当前选中下标
       flag: true,
       //切换表单类型的动态组件数据
       typeTemplate: [
@@ -146,6 +156,7 @@ export default {
         formConTime,
         formConDate,
       ],
+      //表单数据
       formData: {
         title: "",
         explain: "",
@@ -155,13 +166,39 @@ export default {
             replace: "", //替换符
             title: "", //标题
             type: "1", //类型
-            value: "2021年09月03日", //默认值
+            value: "", //默认值
             tips: "", //提示
             placeholder: "", //占位符
             rules: "text",
             required: true,
           },
         ],
+      },
+      //表单字段验证规则
+      rules: {
+        title: { require: true },
+        explain: { require: true },
+        formList: [
+          {
+            replace: { require: true },
+          },
+        ],
+      },
+      //表单验证错误名字
+      formName: {
+        title: "标题",
+        explain: "说明",
+        formList: [
+          {
+            replace: "替换符",
+          },
+        ],
+      },
+      //验证数据
+      formValidateData: {
+        title: "",
+        explain: "",
+        formList: [{}],
       },
     };
   },
@@ -183,8 +220,13 @@ export default {
     };
   },
   watch: {
-    focusIndex() {
-      this.flag = false;
+    focusIndex: {
+      handler(newValue, oldValue) {
+        this.flag = false;
+      },
+    },
+    "formData.formList": {
+      handler() {},
     },
     "itemFormData.type": {
       handler(val) {
@@ -216,6 +258,16 @@ export default {
         this.$set(this.formData.formList, this.focusIndex, value);
       },
     },
+    itemFormValidate() {
+      return function(index) {
+        return this.formValidateData.formList[index];
+      }
+    },
+    itemRules() {
+      return function (key) {
+        return this.rules.formList[this.focusIndex][key];
+      };
+    },
     itemFlag() {
       return function (index) {
         return index == this.focusIndex;
@@ -235,6 +287,14 @@ export default {
         rules: "text",
         required: true,
       });
+      this.rules.formList.push({
+        replace: { require: true },
+      });
+      this.formName.formList.push({
+        replace: "替换符",
+      });
+      this.formValidateData.formList.push({});
+      console.log(this.formValidateData);
       //添加数据自动滚动到最底部
       this.$nextTick(() => {
         var container = this.$el.querySelector("#formList");
@@ -251,7 +311,10 @@ export default {
         });
         return;
       }
+      this.rules.formList.splice(index, 1);
+      this.formName.formList.splice(index, 1);
       this.formData.formList.splice(index, 1);
+      this.formValidateData.formList.splice(index, 1);
       this.focusIndex = 0;
     },
     copy(index) {
@@ -259,6 +322,13 @@ export default {
         ...this.formData.formList[index],
         id: ++this.id,
       });
+      this.rules.formList.splice(index + 1, 0, {
+        ...this.rules.formList[index],
+      });
+      this.formName.formList.splice(index + 1, 0, {
+        ...this.formName.formList[index],
+      });
+      this.formValidateData.formList.splice(index + 1, 0, {});
     },
     itemFoucIndex(index) {
       this.focusIndex = index;
@@ -276,17 +346,26 @@ export default {
       };
     },
     saveForm() {
-      console.log(this.formData);
+      this.formValidateData = this.formValidate(
+        this.formData,
+        this.rules,
+        this.formName
+      );
+      console.log(this.formValidateData);
     },
     preview() {},
     //开始拖拽事件
     onStart(e) {
       this.drag = true;
-      this.focusIndex = e.oldIndex;
-      console.log(this.focusIndex);
+      // this.focusIndex = e.oldIndex;
     },
     //拖拽结束事件
     onEnd(e) {
+      let list = this.formValidateData.formList;
+      [list[e.oldIndex], list[e.newIndex]] = [
+        list[e.newIndex],
+        list[e.oldIndex],
+      ];
       this.drag = false;
       this.focusIndex = e.newIndex;
     },
@@ -299,9 +378,6 @@ body {
   margin: 0 !important;
 }
 .conter {
-  // width: 100%;
-  // margin: 0 30px;
-  // background-color: #f5f5f9;
   height: calc(100vh - 40px);
   background-color: #f1f1f1 !important;
   .form-content {
@@ -312,7 +388,6 @@ body {
     position: relative;
     .form-care2 {
       width: 25%;
-      // height: 100%;
       padding: 10px;
       box-shadow: 0 0 5px 0 #a1d9df;
       background-color: #ffffff;
@@ -335,18 +410,7 @@ body {
       // height: 100%;
       overflow-y: auto;
       width: 25%;
-      // overflow: auto;
       background-color: #fff;
-      .form-list {
-        // height: calc(100% - 40px);
-      }
-      // &::-webkit-scrollbar {
-      //   display: none;
-      // }
-
-      // .preview-button {
-      //   width: 100%;
-      // }
     }
     .form-sticky {
       position: sticky;
@@ -375,12 +439,6 @@ body {
       }
     }
   }
-  .form-fun {
-    // width: 200px;
-    // margin: 0 auto;
-    // display: flex;
-    // justify-content: center;
-  }
 }
 /deep/ .el-button--mini.is-circle {
   padding: 3px;
@@ -394,23 +452,6 @@ body {
   padding: 20px;
   box-shadow: 0 2px 12px 0 #0000001a;
 }
-// .form-del {
-//   display: inline;
-//   position: absolute;
-//   height: 20px;
-//   line-height: 20px;
-//   right: 40px;
-//   bottom: -10px;
-// }
-// .form-copy{
-//   display: inline;
-//   position: absolute;
-//   height: 20px;
-//   line-height: 20px;
-//   right: 65px;
-//   bottom: -10px;
-// }
-
 /deep/ .el-card,
 .el-message {
   overflow: inherit;
