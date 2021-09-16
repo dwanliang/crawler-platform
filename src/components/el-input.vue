@@ -1,8 +1,8 @@
 <template>
   <!-- <el-form-item> -->
-  <div class="chan-input">
+  <div :class="['chan-input']">
     <label class="input-label" slot="label" v-if="label">
-      <em v-if="required">*</em>
+      <em v-if="rules.require || required">*</em>
       {{ label }}
       <el-popover
         placement="bottom"
@@ -22,9 +22,10 @@
       :autosize="{ minRows: 2 }"
       :type="type"
       :style="`width: ${width}`"
+      :class="{'inputRequired': validate.indexOf('空') != -1}"
       @blur="blur"
     ></el-input>
-    <span class="chan-tips">{{ validate }}</span>
+    <!-- <span class="chan-tips">{{ validate }}</span> -->
   </div>
   <!-- </el-col> -->
   <!-- </el-form-item> -->

@@ -4,7 +4,7 @@
       <div class="input-label">
         <label>选项</label>
         <div class="option-laber-fun">
-          <span>模板</span>|<span>添加到模板</span>
+          <span @click="TemplateFlag = true">模板</span>|<span>添加到模板</span>
         </div>
       </div>
       <el-checkbox-group class="option-radio" v-model="itemData.optionValue">
@@ -66,6 +66,21 @@
         <el-radio-button label="2">横向</el-radio-button>
       </el-radio-group>
     </div>
+    <el-dialog
+      top="5vh"
+      :modal="false"
+      title="模板"
+      :visible.sync="TemplateFlag"
+      left
+    >
+      <div>123</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="TemplateFlag = false">取 消</el-button>
+        <el-button type="primary" @click="TemplateFlag = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -75,7 +90,7 @@ import draggable from "vuedraggable";
 import laText from "@/components/el-input";
 
 //js
-import explainList from '@/assets/js/explain'
+import explainList from "@/assets/js/explain";
 export default {
   components: {
     laText,
@@ -93,6 +108,7 @@ export default {
   },
   data() {
     return {
+      TemplateFlag: false,
       itemData: this.deepCopy(this.optionData),
       explainList,
     };
@@ -112,7 +128,6 @@ export default {
   watch: {
     itemData: {
       handler(newVal) {
-        console.log(newVal);
         this.$emit("onOptionData", newVal);
       },
       deep: true,
@@ -120,7 +135,7 @@ export default {
     },
   },
   mounted() {
-    console.log('this.radioData',this.optionData);
+    console.log("this.radioData", this.optionData);
   },
   methods: {
     change(val) {
@@ -150,11 +165,10 @@ export default {
       //如果已选列表存在删除的选项则将其从已选列表删除
       let id = optionList[index].id;
       let Value = this.itemData.optionValue;
-      index = Value.indexOf(id)
-      if(Value.indexOf(id)){
+      index = Value.indexOf(id);
+      if (Value.indexOf(id)) {
         Value.splice(index, 1);
       }
-      
     },
     optionAdd(itemList) {
       itemList.push({

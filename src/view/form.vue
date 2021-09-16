@@ -81,6 +81,9 @@
             label="标题"
             :explain="explainList.formTitle"
             v-model="itemFormData.title"
+            :validate.sync="itemFormValidate(focusIndex)['title']"
+            :rules="itemRules('title')"
+            required
           ></la-text>
           <la-text
             label="替换符"
@@ -181,6 +184,7 @@ export default {
         formList: [
           {
             replace: { require: true },
+            title: { require: true },
           },
         ],
       },
@@ -232,6 +236,7 @@ export default {
       handler(val) {
         if (this.flag) {
           this.initItemForm();
+          this.itemFormValidate = {};
           if (val == 1) {
             this.itemFormData.rules = "text";
           }
@@ -258,10 +263,19 @@ export default {
         this.$set(this.formData.formList, this.focusIndex, value);
       },
     },
-    itemFormValidate() {
-      return function(index) {
-        return this.formValidateData.formList[index];
-      }
+    itemFormValidate: {
+      get: function () {
+        return function (index) {
+          return this.formValidateData.formList[index];
+        };
+      },
+      set: function (value) {
+        let formValidateData = this.formValidateData.formList;
+        this.$set(formValidateData, this.focusIndex, value);
+      },
+      // return function(index) {
+      //   return this.formValidateData.formList[index];
+      // }
     },
     itemRules() {
       return function (key) {
@@ -289,6 +303,7 @@ export default {
       });
       this.rules.formList.push({
         replace: { require: true },
+        title: { require: true },
       });
       this.formName.formList.push({
         replace: "替换符",
@@ -335,7 +350,8 @@ export default {
     },
     initItemForm() {
       this.itemFormData = {
-        ...this.itemFormData,
+        id: this.itemFormData.id, //id
+        type: this.itemFormData.type, //类型
         replace: "", //替换符
         title: "", //标题
         value: "", //默认值

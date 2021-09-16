@@ -122,6 +122,7 @@ export default {
   cursor: pointer;
   padding: 10px;
   background-color: #ffffff;
+  min-height: 100px;
   &::after {
     content: "";
     position: absolute;
