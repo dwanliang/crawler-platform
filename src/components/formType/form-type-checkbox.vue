@@ -39,8 +39,9 @@ export default {
   },
   mixins: [formMixin],
   created() {
+    console.log(this.itemFormData);
     if (this.itemFormData.direction) {
-      this.radioData = {
+      this.checkboxData = {
         optionValue: this.itemFormData.optionValue,
         optionList: this.itemFormData.optionList,
         direction: this.itemFormData.direction,

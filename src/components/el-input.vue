@@ -149,6 +149,11 @@ export default {
         color: #ee3f3f;
       }
     }
+    /deep/ .el-textarea__inner{
+      &::-webkit-input-placeholder {
+        color: #ee3f3f;
+      }
+    }
   }
   .chan-tips {
     font-size: 14px;

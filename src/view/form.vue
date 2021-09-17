@@ -3,33 +3,13 @@
   <div class="box-card conter">
     <div class="form-content">
       <div class="form-care2">
-        <div class="form-list fouc-in">
-          <el-form>
-            <la-text
-              ref="title"
-              label="标题"
-              v-model="formData.title"
-            ></la-text>
-            <la-text
-              label="简要说明"
-              ref="explain"
-              v-model="formData.explain"
-              type="textarea"
-            ></la-text>
-          </el-form>
-        </div>
-        <div class="form-fun">
-          <el-button
-            type="primary"
-            id="add"
-            @click="add"
-            icon="el-icon-plus"
-          ></el-button>
-          <el-button type="success" @click="saveForm">保存</el-button>
-          <el-button class="preview-button" type="info" @click="preview"
-            >预览</el-button
-          >
-        </div>
+        <form-left
+          @add="add"
+          @saveForm="saveForm"
+          :formData="formData"
+          :formValidateData="formValidateData"
+          :rules="rules"
+        ></form-left>
       </div>
       <draggable
         v-model="formData.formList"
@@ -119,21 +99,15 @@ import formTypeCheckbox from "@/components/formType/form-type-checkbox"; //多�
 import formTypeTime from "@/components/formType/form-type-time"; //时间框
 import formTypeDate from "@/components/formType/form-type-date"; //日期框
 
-//表单内容动态组件
-import formConText from "@/components/formCon/form-con-text"; //单、多行文本框
-import formConRadio from "@/components/formCon/form-con-radio"; ////单选框
-import formConCheckbox from "@/components/formCon/form-con-checkbox"; ////多选框
-import formConTime from "@/components/formCon/form-con-time"; ////时间框
-import formConDate from "@/components/formCon/form-con-date"; ////日期框
-
 //组件
 import formList from "@/components/form-list";
+import formLeft from "@/components/form-left";
 //js
 import formMixin from "@/assets/js/mixins/formMixin";
-import FormList from "../components/form-list.vue";
+// import FormList from "../components/form-list.vue";
 
 export default {
-  components: { FormList },
+  components: { formList, formLeft },
   mixins: [formMixin],
   data() {
     return {
@@ -149,15 +123,6 @@ export default {
         formTypeCheckbox,
         formTypeTime,
         formTypeDate,
-      ],
-      //表单内容的动态组件数据
-      contentTemplate: [
-        formConText,
-        formConText,
-        formConRadio,
-        formConCheckbox,
-        formConTime,
-        formConDate,
       ],
       //表单数据
       formData: {
@@ -249,11 +214,6 @@ export default {
     formType() {
       return this.typeTemplate[+this.itemFormData.type - 1];
     },
-    // formContent() {
-    //   return function (type) {
-    //     return this.contentTemplate[type - 1];
-    //   };
-    // },
     itemFormData: {
       get: function () {
         return this.formData.formList[this.focusIndex];

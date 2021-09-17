@@ -135,7 +135,7 @@ export default {
     },
   },
   mounted() {
-    console.log("this.radioData", this.optionData);
+    
   },
   methods: {
     change(val) {
