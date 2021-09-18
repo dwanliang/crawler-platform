@@ -4,7 +4,7 @@
       :label="itemFormData.title ? itemFormData.title : '未命名'"
       v-model="itemFormData.value"
       :placeholder="itemFormData.placeholder"
-      :isUpdate="false"
+      :isUpdate="true"
       :required="itemFormData.required"
       :type="+itemFormData.type === 2 ? 'textarea' : ''"
       :width="+itemFormData.type === 2 ? '100%' : '80%'"

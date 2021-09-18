@@ -104,6 +104,7 @@ import formList from "@/components/form-list";
 import formLeft from "@/components/form-left";
 //js
 import formMixin from "@/assets/js/mixins/formMixin";
+import Bus from "@/assets/js/bus";
 // import FormList from "../components/form-list.vue";
 
 export default {
@@ -133,7 +134,7 @@ export default {
             id: 1,
             replace: "", //替换符
             title: "", //标题
-            type: "1", //类型
+            type: "3", //类型
             value: "", //默认值
             tips: "", //提示
             placeholder: "", //占位符
@@ -171,6 +172,9 @@ export default {
       },
     };
   },
+  beforeDestroy() {
+    Bus.$off("setOptionValue");
+  },
   mounted() {
     document.onkeydown = (e) => {
       let key = window.event.keyCode;
@@ -187,6 +191,14 @@ export default {
           return;
       }
     };
+    Bus.$on("setOptionValue", (res) => {
+      // console.log(res);
+      // this.$set(this.itemFormData, "optionValue", res);
+      this.itemFormData = {
+        ...this.itemFormData,
+        optionValue: res
+      };
+    });
   },
   watch: {
     focusIndex: {
@@ -250,6 +262,7 @@ export default {
   },
   methods: {
     add() {
+      console.log(this.formData);
       this.formData.formList.push({
         id: ++this.id,
         replace: "", //替换符
@@ -376,10 +389,10 @@ body {
       }
     }
     .form-care5 {
-      height: 100%;
       overflow-y: auto;
       width: 45%;
       background-color: #ffffff;
+      padding-bottom: 30px;
     }
     .form-care3 {
       padding: 10px;
@@ -388,17 +401,17 @@ body {
       width: 25%;
       background-color: #fff;
     }
-    .form-sticky {
-      position: sticky;
-      top: 0px;
-      z-index: 999;
-    }
+    // .form-sticky {
+    //   position: sticky;
+    //   top: 0px;
+    //   z-index: 999;
+    // }
     .form-care2,
     .form-care3,
     .form-care5 {
       &::-webkit-scrollbar {
         /*滚动条整体样式*/
-        width: 7px; /*高宽分别对应横竖滚动条的尺寸*/
+        width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
         height: 1px;
       }
       &::-webkit-scrollbar-thumb {

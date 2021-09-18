@@ -28,6 +28,7 @@ export default {
         optionValue: [],
         optionList: checkboxList,
         direction: 1, //排列方向
+        optionStyle: 1, //多选样式 1checkbox 2select
       },
     };
   },
@@ -39,12 +40,12 @@ export default {
   },
   mixins: [formMixin],
   created() {
-    console.log(this.itemFormData);
     if (this.itemFormData.direction) {
       this.checkboxData = {
         optionValue: this.itemFormData.optionValue,
         optionList: this.itemFormData.optionList,
         direction: this.itemFormData.direction,
+        optionStyle: this.itemFormData.optionStyle,
       };
     }
   },

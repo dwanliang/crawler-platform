@@ -27,6 +27,7 @@ export default {
         optionValue: [],
         optionList: radioList,
         direction: 1, //排列方向
+        optionStyle: 1, //多选样式 1checkbox 2select
       },
     };
   },
@@ -43,6 +44,7 @@ export default {
         optionValue: this.itemFormData.optionValue,
         optionList: this.itemFormData.optionList,
         direction: this.itemFormData.direction,
+        optionStyle: this.itemFormData.optionStyle,
       };
     }
   },

@@ -123,15 +123,15 @@ export default {
   padding: 10px;
   background-color: #ffffff;
   min-height: 100px;
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 998;
-  }
+  // &::after {
+  //   content: "";
+  //   position: absolute;
+  //   left: 0;
+  //   top: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   z-index: 998;
+  // }
   .form-draggable {
     position: absolute;
     top: 15px;

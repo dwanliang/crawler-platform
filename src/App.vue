@@ -7,30 +7,20 @@
   </div>
 </template>
 <script>
-
 export default {
-  name: 'App',
-  created(){
-    
-  },
-  mounted() {
-
-  },
-  methods:{
-    
-  }
-}
+  name: "App",
+  created() {},
+  mounted() {},
+  methods: {},
+};
 </script>
 
 <style>
+@import "./assets/css/style.scss";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-}
-body {
-    display: block;
-    margin: 0px;
 }
 </style>

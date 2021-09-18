@@ -4,7 +4,10 @@
       <div class="input-label">
         <label>选项</label>
         <div class="option-laber-fun">
-          <span @click="TemplateFlag = true">模板</span>|<span>添加到模板</span>
+          <span @click="TemplateFlag = true">模板</span>|<span
+            @click="addOpenTemp"
+            >添加到模板</span
+          >
         </div>
       </div>
       <el-checkbox-group class="option-radio" v-model="itemData.optionValue">
@@ -17,31 +20,29 @@
           handle=".option-draggable"
           class="form-care7"
         >
-          <transition-group>
-            <div
-              class="option-select"
-              v-for="(item, index) in itemData.optionList"
-              :key="item.id"
+          <div
+            class="option-select"
+            v-for="(item, index) in itemData.optionList"
+            :key="item.id"
+          >
+            <i class="el-icon-s-unfold option-draggable"></i>
+            <el-checkbox
+              @click.native.stop.prevent="change(item.id)"
+              :label="item.id"
+              :class="type == 'radio' ? 'select-radio' : ''"
             >
-              <i class="el-icon-s-unfold option-draggable"></i>
-              <el-checkbox
-                @click.native.stop.prevent="change(item.id)"
-                :label="item.id"
-                :class="type == 'radio' ? 'select-radio' : ''"
-              >
-                <span></span>
-              </el-checkbox>
-              <la-text v-model="item.value" width="100%"></la-text>
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                circle
-                :disabled="itemData.optionList.length == 1"
-                @click="optionDel(index)"
-              ></el-button>
-            </div>
-          </transition-group>
+              <span></span>
+            </el-checkbox>
+            <la-text v-model="item.value" width="100%"></la-text>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              circle
+              :disabled="itemData.optionList.length == 1"
+              @click="optionDel(index)"
+            ></el-button>
+          </div>
         </draggable>
       </el-checkbox-group>
       <el-button size="mini" @click="optionAdd(itemData.optionList)"
@@ -49,6 +50,24 @@
       >
     </div>
     <div class="option-direction">
+      <label class="input-label">
+        <em>*</em>
+        样式
+        <el-popover
+          placement="bottom"
+          width="200"
+          trigger="click"
+          :content="explainList.formOptionStyle"
+        >
+          <i class="el-icon-question" slot="reference"></i>
+        </el-popover>
+      </label>
+      <el-radio-group v-model="itemData.optionStyle" size="small">
+        <el-radio-button label="1">列表</el-radio-button>
+        <el-radio-button label="2">下拉框</el-radio-button>
+      </el-radio-group>
+    </div>
+    <div class="option-direction" v-if="itemData.optionStyle != 2">
       <label class="input-label">
         <em>*</em>
         排列方向
@@ -68,18 +87,31 @@
     </div>
     <el-dialog
       top="5vh"
+      width="600px"
       :modal="false"
-      title="模板"
+      :title="templateTitle"
       :visible.sync="TemplateFlag"
-      left
+      :before-close="cancel"
     >
-      <div>123</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="TemplateFlag = false">取 消</el-button>
-        <el-button type="primary" @click="TemplateFlag = false"
-          >确 定</el-button
+      <div class="template-tab" v-show="tabIndex != 3">
+        <div
+          :class="['tab-item', { 'tab-active': tabIndex == 1 }]"
+          @click="tabIndex = 1"
         >
-      </span>
+          系统模板
+        </div>
+        <div
+          :class="['tab-item', { 'tab-active': tabIndex == 2 }]"
+          @click="tabIndex = 2"
+        >
+          我的模板
+        </div>
+      </div>
+      <option-template
+        :optList="optList"
+        @cancel="cancel"
+        @confirm="confirm"
+      ></option-template>
     </el-dialog>
   </div>
 </template>
@@ -88,13 +120,16 @@
 //组件
 import draggable from "vuedraggable";
 import laText from "@/components/el-input";
+import optionTemplate from "@/components/formType/optionTemplate";
 
 //js
 import explainList from "@/assets/js/explain";
+import { sysData } from "@/assets/js/optionTemplate";
 export default {
   components: {
     laText,
     draggable,
+    optionTemplate,
   },
   props: {
     optionData: {
@@ -111,20 +146,48 @@ export default {
       TemplateFlag: false,
       itemData: this.deepCopy(this.optionData),
       explainList,
+      tabIndex: 1, //1系统模板 2我的模板 3添加到模板
+      addTempName: "", //添加到模板name\
+      //我的模板测试数据
+      temData: [
+        {
+          name: "测试",
+          list: [
+            { id: 1, value: "测试1" },
+            { id: 2, value: "测试2" },
+          ],
+        },
+      ],
     };
   },
-
-  // computed: {
-  //   itemData: {
-  //     get: function () {
-  //       return this.optionData;
-  //     },
-  //     set: function (value) {
-  //       console.log(value);
-  //       this.$emit("onOptionData", value);
-  //     },
-  //   },
-  // },
+  computed: {
+    // dialog数据
+    optList: {
+      get: function () {
+        switch (this.tabIndex) {
+          case 1:
+            return sysData;
+          case 2:
+            return this.temData;
+          case 3:
+            return [{ name: this.addTempName, list: this.itemData.optionList }];
+          default:
+            return [];
+        }
+      },
+      set: function (value) {
+        this.$emit("onOptionData", value);
+      },
+    },
+    templateTitle() {
+      let name = this.addTempName
+        ? "添加到我的模板"
+        : this.tabIndex == 1
+        ? "系统模板"
+        : "我的模板";
+      return name;
+    },
+  },
   watch: {
     itemData: {
       handler(newVal) {
@@ -134,9 +197,7 @@ export default {
       immediate: true,
     },
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     change(val) {
       let Value = this.itemData.optionValue;
@@ -175,6 +236,36 @@ export default {
         id: itemList[itemList.length - 1].id + 1,
         value: "选项",
       });
+    },
+    addOpenTemp() {
+      this.$prompt("请输入模板姓名", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(({ value }) => {
+          this.tabIndex = 3;
+          console.log(this.optList, value);
+          this.addTempName = value;
+          this.TemplateFlag = true;
+        })
+        .catch(() => {});
+    },
+    cancel() {
+      console.log(1);
+      this.tabIndex = 1;
+      this.TemplateFlag = false;
+      this.addTempName = "";
+    },
+    confirm(val) {
+      this.TemplateFlag = false;
+      if (this.tabIndex == 3) {
+        let addtempData = { name: this.addTempName, list: val };
+        console.log(JSON.stringify(addtempData));
+        console.log(addtempData);
+      } else {
+        this.itemData.optionList = val;
+      }
+      this.tabIndex = 1;
     },
     //拖拽结束事件
     // onEnd(e) {
@@ -260,5 +351,30 @@ export default {
 }
 .option-direction {
   // margin-top: 5px;
+}
+.template-tab {
+  white-space: nowrap;
+  position: relative;
+  transition: transform 0.3s;
+  float: left;
+  margin-bottom: 5px;
+  width: 100%;
+  z-index: 2;
+  .tab-item {
+    margin-right: 20px;
+    height: 30px;
+    box-sizing: border-box;
+    line-height: 30px;
+    display: inline-block;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303133;
+    position: relative;
+  }
+  .tab-active {
+    color: #409effed;
+    border-bottom: 1px solid #409eff;
+  }
 }
 </style>
