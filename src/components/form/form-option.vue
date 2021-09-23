@@ -120,7 +120,7 @@
 //组件
 import draggable from "vuedraggable";
 import laText from "@/components/el-input";
-import optionTemplate from "@/components/formType/optionTemplate";
+import optionTemplate from "@/components/form/formType/optionTemplate";
 
 //js
 import explainList from "@/assets/js/explain";
@@ -199,6 +199,9 @@ export default {
   },
   mounted() {},
   methods: {
+    /**
+     * 多选框的点击事件
+     */
     change(val) {
       let Value = this.itemData.optionValue;
       if (this.type == "checkbox") {
@@ -215,10 +218,10 @@ export default {
           this.itemData.optionValue.push(val);
         }
       }
-      // val == Value
-      //   ? (this.itemData.optionValue = "")
-      //   : (this.itemData.optionValue = val);
     },
+    /**
+     * 删除选项
+     */
     optionDel(index) {
       let optionList = this.itemData.optionList;
       if (optionList.length == 1) return;
@@ -231,12 +234,18 @@ export default {
         Value.splice(index, 1);
       }
     },
+    /**
+     * 添加选项
+     */
     optionAdd(itemList) {
       itemList.push({
         id: itemList[itemList.length - 1].id + 1,
         value: "选项",
       });
     },
+    /**
+     * 弹出添加模板
+     */
     addOpenTemp() {
       this.$prompt("请输入模板姓名", "提示", {
         confirmButtonText: "确定",
@@ -250,19 +259,25 @@ export default {
         })
         .catch(() => {});
     },
+    /**
+     * 初始化模板弹窗
+     */
     cancel() {
-      console.log(1);
       this.tabIndex = 1;
       this.TemplateFlag = false;
       this.addTempName = "";
     },
+    /**
+     * 模板弹窗确定回调
+     */
     confirm(val) {
       this.TemplateFlag = false;
+      //添加到我的模板
       if (this.tabIndex == 3) {
         let addtempData = { name: this.addTempName, list: val };
         console.log(JSON.stringify(addtempData));
         console.log(addtempData);
-      } else {
+      } else {//模板列表
         this.itemData.optionList = val;
       }
       this.tabIndex = 1;

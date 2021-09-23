@@ -7,5 +7,7 @@ const explainList = {
   formTime:'默认显示的时间',
   formDirection:'你可以设置该字段的选项是横向排序还是纵向排序',
   formOptionStyle:'你可以设置该字段选项的样式是列表或者下拉框',
+  minSize:'限制填写者最少需要选择多少项',
+  maxSize:'限制填写者最多可以选择多少项',
 }
 export default explainList;

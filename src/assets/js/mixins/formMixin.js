@@ -3,6 +3,7 @@
 import draggable from "vuedraggable";
 import laText from "@/components/el-input";
 import dropDown from "@/components/drop-down";
+import formLabel from '@/components/form/form-label'
 
 //js
 import { typeList, rulesList } from "@/assets/js/dictionaries";
@@ -14,6 +15,7 @@ export default {
     draggable,
     laText,
     dropDown,
+    formLabel,
   },
   mounted() {
 

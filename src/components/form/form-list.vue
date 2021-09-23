@@ -44,11 +44,11 @@
 
 <script>
 //表单内容动态组件
-import formConText from "@/components/formCon/form-con-text"; //单、多行文本框
-import formConRadio from "@/components/formCon/form-con-radio"; ////单选框
-import formConCheckbox from "@/components/formCon/form-con-checkbox"; ////多选框
-import formConTime from "@/components/formCon/form-con-time"; ////时间框
-import formConDate from "@/components/formCon/form-con-date"; ////日期框
+import formConText from "@/components/form/formCon/form-con-text"; //单、多行文本框
+import formConRadio from "@/components/form/formCon/form-con-radio"; ////单选框
+import formConCheckbox from "@/components/form/formCon/form-con-checkbox"; ////多选框
+import formConTime from "@/components/form/formCon/form-con-time"; ////时间框
+import formConDate from "@/components/form/formCon/form-con-date"; ////日期框
 
 export default {
   props: {

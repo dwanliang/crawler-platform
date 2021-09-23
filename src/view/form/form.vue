@@ -93,15 +93,15 @@
 </template>
 <script>
 // 切换表单类型的动态组件
-import formTypeText from "@/components/formType/form-type-text"; //单、多行文本框
-import formTypeRadio from "@/components/formType/form-type-radio"; //单选框
-import formTypeCheckbox from "@/components/formType/form-type-checkbox"; //多选框
-import formTypeTime from "@/components/formType/form-type-time"; //时间框
-import formTypeDate from "@/components/formType/form-type-date"; //日期框
+import formTypeText from "@/components/form/formType/form-type-text"; //单、多行文本框
+import formTypeRadio from "@/components/form/formType/form-type-radio"; //单选框
+import formTypeCheckbox from "@/components/form/formType/form-type-checkbox"; //多选框
+import formTypeTime from "@/components/form/formType/form-type-time"; //时间框
+import formTypeDate from "@/components/form/formType/form-type-date"; //日期框
 
 //组件
-import formList from "@/components/form-list";
-import formLeft from "@/components/form-left";
+import formList from "@/components/form/form-list";
+import formLeft from "@/components/form/form-left";
 //js
 import formMixin from "@/assets/js/mixins/formMixin";
 import Bus from "@/assets/js/bus";
@@ -134,7 +134,7 @@ export default {
             id: 1,
             replace: "", //替换符
             title: "", //标题
-            type: "3", //类型
+            type: "4", //类型
             value: "", //默认值
             tips: "", //提示
             placeholder: "", //占位符

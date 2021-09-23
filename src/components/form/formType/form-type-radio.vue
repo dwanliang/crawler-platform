@@ -6,27 +6,26 @@
       v-model="itemFormData.tips"
     ></la-text>
     <form-option
-      :optionData="checkboxData"
+      :optionData="radioData"
       @onOptionData="onOptionData"
-      type="checkbox"
+      type="radio"
     ></form-option>
   </div>
 </template>
 
 <script>
 import formMixin from "@/assets/js/mixins/formMixin";
-import formOption from "@/components/formType/form-option";
-import { checkboxList } from "@/assets/js/dictionaries";
+import formOption from "@/components/form/form-option";
+import { radioList } from "@/assets/js/dictionaries";
 export default {
   components: {
     formOption,
   },
   data() {
     return {
-      type: "checkbox",
-      checkboxData: {
+      radioData: {
         optionValue: [],
-        optionList: checkboxList,
+        optionList: radioList,
         direction: 1, //排列方向
         optionStyle: 1, //多选样式 1checkbox 2select
       },
@@ -41,7 +40,7 @@ export default {
   mixins: [formMixin],
   created() {
     if (this.itemFormData.direction) {
-      this.checkboxData = {
+      this.radioData = {
         optionValue: this.itemFormData.optionValue,
         optionList: this.itemFormData.optionList,
         direction: this.itemFormData.direction,
@@ -49,19 +48,10 @@ export default {
       };
     }
   },
-  watch: {
-    checkboxData: {
-      handler(newVal) {
-        console.log('--------',this.checkboxData);
-        // this.$emit("onOptionData", newVal);
-      },
-      deep: true,
-    },
-  },
   methods: {
     //单选数据回调
     onOptionData(newVal) {
-      this.$emit('update:itemFormData', {...this.itemFormData, ...newVal});
+      this.$emit("update:itemFormData", { ...this.itemFormData, ...newVal });
     },
   },
 };
