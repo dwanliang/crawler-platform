@@ -65,7 +65,7 @@ export default {
   computed: {
     title() {
       let data = this.itemFormData;
-      let title = data.title ? data : "未命名";
+      let title = data.title ? data.title : "未命名";
       //多选
       // minOpen: false, //是否开启最少选项
       //   minSize: 0, //最少选多少个选项

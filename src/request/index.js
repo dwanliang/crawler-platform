@@ -1,5 +1,5 @@
 import axios from 'axios';//导入
-const url = "http://47.107.243.176:9528/api/";
+const url = "http://lzy.cn/api/";
 const service = axios.create({
   baseURL: url, // url = base url + 请求url
   timeout: 50000 // 请求超时时间

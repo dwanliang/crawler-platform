@@ -226,6 +226,7 @@ export default {
     formType() {
       return this.typeTemplate[+this.itemFormData.type - 1];
     },
+    //当前选中的数据
     itemFormData: {
       get: function () {
         return this.formData.formList[this.focusIndex];
@@ -235,6 +236,7 @@ export default {
         this.$set(this.formData.formList, this.focusIndex, value);
       },
     },
+    //当前选中的验证数据
     itemFormValidate: {
       get: function () {
         return function (index) {
@@ -306,8 +308,9 @@ export default {
       this.focusIndex = 0;
     },
     copy(index) {
+      let list = this.deepCopy(this.formData.formList[index]);
       this.formData.formList.splice(index + 1, 0, {
-        ...this.formData.formList[index],
+        ...list,
         id: ++this.id,
       });
       this.rules.formList.splice(index + 1, 0, {
