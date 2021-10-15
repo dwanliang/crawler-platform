@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/view/index'
 import Form from '@/view/form/form'
+import formCon from '@/view/form/form-con'
 import Test from '@/view/test'
 
 Vue.use(Router)
@@ -20,6 +21,14 @@ const router = new Router({
       path: '/',
       name: 'Form',
       component: Form,
+      meta:{
+        title: '表单页'
+      }
+    },
+    {
+      path: '/form-con',
+      name: 'formCon',
+      component: formCon,
       meta:{
         title: '表单页'
       }

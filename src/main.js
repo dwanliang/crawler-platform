@@ -7,9 +7,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import request from './request'
 import api from './request/api'
-import {deepCopy} from "@/assets/js/utils";
+import {deepCopy, isEmptyObj} from "@/assets/js/utils";
 
 Vue.prototype.deepCopy = deepCopy;
+Vue.prototype.isEmptyObj = isEmptyObj;
 Vue.prototype.httpPost = request.post;
 Vue.prototype.httpGet = request.get;
 Vue.prototype.$api = api;

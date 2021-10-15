@@ -30,9 +30,9 @@ service.interceptors.response.use((response) => {
   }
 )
 const http = {
-  get(url='',data = {}){
+  get(url='',params = {}){
     return new Promise((resolve,reject) =>{
-      service.get(url, data).then((res) =>{
+      service.get(url, {params}).then((res) =>{
           resolve(res);
       }).catch((error) =>{
           reject(error);

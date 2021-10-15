@@ -37,7 +37,7 @@
                 :itemIndex="index"
                 :formDataLength="formData.formList.length"
                 :validate="itemFormValidate(index)"
-                :ref="`formList${focusIndex}`"
+                :ref="`formList${index}`"
                 @del="del"
                 @copy="copy"
                 @itemFoucIndex="itemFoucIndex"
@@ -196,7 +196,7 @@ export default {
       // this.$set(this.itemFormData, "optionValue", res);
       this.itemFormData = {
         ...this.itemFormData,
-        optionValue: res
+        optionValue: res,
       };
     });
   },
@@ -337,13 +337,51 @@ export default {
         required: true,
       };
     },
-    saveForm() {
+    saveForm(wordFile) {
       this.formValidateData = this.formValidate(
         this.formData,
         this.rules,
         this.formName
       );
-      console.log(this.formValidateData);
+      let tmpValidateData = this.deepCopy(this.formValidateData);
+      delete tmpValidateData.formList;
+      let formListOK = false;
+      for (let item of this.formValidateData.formList) {
+        if (!this.isEmptyObj(item)) {
+          formListOK = true;
+          break;
+        }
+      }
+      if (formListOK || !this.isEmptyObj(tmpValidateData)) {
+        return;
+      }
+      if (!wordFile) {
+        this.$message({
+          message: "请选择文件",
+          type: "warning",
+        });
+      }
+      let param = new FormData();
+      param.append("title", this.formData.title);
+      param.append("explain", this.formData.explain);
+      param.append("formList", JSON.stringify(this.formData.formList));
+      param.append("wordFile", wordFile);
+      this.httpPost(this.$api.Form.add, param).then((res) => {
+        if (res.code == 200) {
+          this.$message({
+            message: res.msg,
+            type: "success",
+          });
+          setTimeout(() => {
+            this.$router.push({
+              path: "/form-con",
+              query: {
+                id: res.data,
+              },
+            });
+          }, 2000);
+        }
+      });
     },
     preview() {},
     //开始拖拽事件

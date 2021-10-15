@@ -142,3 +142,12 @@ export const deepCopy = (obj) => {
   }
   return newObj;
 };
+
+export const isEmptyObj = (obj) => {
+  if (typeof obj != 'object') {
+    return false;
+  } else if (JSON.stringify(obj) == '{}') {
+    return true;
+  }
+  return false;
+}

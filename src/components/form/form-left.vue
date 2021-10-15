@@ -20,7 +20,7 @@
         <div class="form-upload">
           <el-upload
             class="upload-demo"
-            ref="upload"
+            ref="uploadWord"
             action="https://jsonplaceholder.typicode.com/posts/"
             :file-list="fileList"
             :auto-upload="false"
@@ -41,9 +41,7 @@
         icon="el-icon-plus"
       ></el-button>
       <el-button type="success" @click="saveForm">保存</el-button>
-      <el-button class="preview-button" type="info" @click="preview"
-        >预览</el-button
-      >
+      
     </div>
   </div>
 </template>
@@ -82,9 +80,12 @@ export default {
       this.$emit("add");
     },
     saveForm() {
-      this.$emit("saveForm");
+      let wordFile = this.$refs.uploadWord.uploadFiles[0];
+      if (wordFile) {
+        wordFile = wordFile.raw;
+      }
+      this.$emit("saveForm",wordFile);
     },
-    preview() {},
   },
 };
 </script>

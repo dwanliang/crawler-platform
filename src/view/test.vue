@@ -45,13 +45,13 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    getImgText() {
+    getImgText(files) {
       let param = new FormData()  // 创建form对象
-      param.append('file', this.files)  // 通过append向form对象添加数据
+      param.append('file', files)  // 通过append向form对象添加数据
       this.httpPost(this.$api.Form.getImgText, param).then((res) => {
-      //成功
-      console.log(res);
-    });
+        //成功
+        console.log(res);
+      });
     },
     mousedown(e) {
       if (!this.clickFlag) return;
@@ -161,7 +161,7 @@ export default {
       let dataUrl = this.cutCanvas.toDataURL('image/png')
       // 转换成 file 对象 headPic: 名称可自定义
       this.files = this.changeToFile(dataUrl, 'headPic')
-      this.getImgText();
+      this.getImgText(this.files);
     },
     // 转换成file对象
     changeToFile (dataUrl, fileName) {
